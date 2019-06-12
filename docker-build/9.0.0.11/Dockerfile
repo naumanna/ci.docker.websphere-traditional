@@ -27,14 +27,19 @@ ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.11.20190312_2048
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 RUN mkdir /work && cd /work && wget $IMURL \
+  && echo "DEBUG finished download" \
   && unzip -q agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
+  && echo "DEBUG unzipped zip" \
   && rm -rf agent.installer.linux.gtk.x86_64*.zip \
+  && echo "DEBUG removed zip" \
   && echo "your_secureStore_password" > /tmp/secureStorePwd \
+  && echo "DEBUG saved secure password" \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
     -userName $IBMID -userPassword $IBMID_PWD \
     -secureStorageFile /tmp/secureStore \
     -masterPasswordFile /tmp/secureStorePwd \
     -url $REPO -verbose \
+  && echo "DEBUG saved credentials" \
   && /work/InstallationManagerKit/tools/imcl install \
     $PRODUCTID com.ibm.java.jdk.v8 \
     -acceptLicense -accessRights nonAdmin -showProgress \
@@ -46,6 +51,7 @@ RUN mkdir /work && cd /work && wget $IMURL \
 com.ibm.cic.common.core.preferences.searchForUpdates=true,\
 com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
 com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
+  && echo "DEBUG finished download" \
   && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
   && chmod -R g+rw /opt/IBM/
 
